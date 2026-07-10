@@ -1,30 +1,28 @@
 package com.example.cardocs.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cardocs.R
+import com.example.cardocs.data.Document
+import com.example.cardocs.data.DocumentType
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import com.example.cardocs.data.Document
-import com.example.cardocs.data.DocumentType
-import com.example.cardocs.R
-import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,8 +78,8 @@ fun DocumentsScreen(
                     )
                 }
             }
-
         }
+
         if (showDialog) {
             AddDocumentDialog(
                 onDismiss = { showDialog = false },
@@ -91,6 +89,7 @@ fun DocumentsScreen(
                 }
             )
         }
+
         editingDocument?.let { document ->
             EditDocumentDialog(
                 document = document,
@@ -103,7 +102,6 @@ fun DocumentsScreen(
         }
     }
 }
-
 
 @Composable
 fun DocumentItem(
@@ -118,7 +116,6 @@ fun DocumentItem(
     val isExpired = daysUntilExpiration < 0
     val isExpiringSoon = daysUntilExpiration in 0..30
 
-
     val cardColors = when {
         isExpired -> Color(0xFFE57373)        // Material Red 300
         isExpiringSoon -> Color(0xFFFFB74D)   // Material Orange 300
@@ -127,7 +124,7 @@ fun DocumentItem(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = cardColors
+        colors = CardDefaults.cardColors(containerColor = cardColors)
     ) {
         Row(
             modifier = Modifier
@@ -138,14 +135,7 @@ fun DocumentItem(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = if (document.description.isNotEmpty())
-                        document.description
-                    else
-                        document.type.toLocalizedString(),
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = document.type.toLocalizedString(),
+                    text = document.description.ifEmpty { document.type.toLocalizedString() },
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
@@ -154,18 +144,13 @@ fun DocumentItem(
                 )
                 Text(
                     text = when {
-                        isExpired -> stringResource(R.string.expires_today, -daysUntilExpiration)
+                        isExpired -> stringResource(R.string.expired)
                         daysUntilExpiration == 0L -> stringResource(R.string.expires_today)
                         daysUntilExpiration == 1L -> stringResource(R.string.expires_tomorrow)
                         else ->  stringResource(R.string.days_remaining, daysUntilExpiration)
                     },
                     style = MaterialTheme.typography.bodySmall,
-                    color = when {
-                        isExpired -> MaterialTheme.colorScheme.error
-                        isExpiringSoon -> MaterialTheme.colorScheme.tertiary
-                        else -> MaterialTheme.colorScheme.onSurfaceVariant
-
-                    }
+                    color = if (isExpired) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 if (document.notificationDays.isNotEmpty()){
                     Text(
@@ -193,13 +178,13 @@ fun DocumentItem(
             }
         }
     }
-    // Delete Confirmation Dialog
+
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text(stringResource(R.string.delete_document)) },
             text = {
-                stringResource(R.string.delete_document_confirmation, document.type)
+                Text(stringResource(R.string.delete_document_confirmation, document.type.toLocalizedString()))
             },
             confirmButton = {
                 TextButton(
@@ -207,9 +192,7 @@ fun DocumentItem(
                         onDelete()
                         showDeleteDialog = false
                     },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
+                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
                 ) {
                     Text(stringResource(R.string.delete))
                 }
@@ -238,19 +221,14 @@ fun AddDocumentDialog(
 
     val showDescriptionField = selectedType == DocumentType.OTHER || selectedType == DocumentType.ROAD_TOLL || selectedType == DocumentType.VIGNETTE
 
-
-
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add Document") },
+        title = { Text(stringResource(R.string.add_document)) },
         text = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Document Type Dropdown
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
@@ -261,9 +239,7 @@ fun AddDocumentDialog(
                         readOnly = true,
                         label = { Text(stringResource(R.string.document_type)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor()
+                        modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                     )
                     ExposedDropdownMenu(
                         expanded = expanded,
@@ -275,9 +251,6 @@ fun AddDocumentDialog(
                                 onClick = {
                                     selectedType = type
                                     expanded = false
-                                    if (type != DocumentType.OTHER && type != DocumentType.ROAD_TOLL && type != DocumentType.VIGNETTE){
-                                        description = ""
-                                    }
                                 }
                             )
                         }
@@ -287,40 +260,29 @@ fun AddDocumentDialog(
                 if (showDescriptionField) {
                     OutlinedTextField(
                         value = description,
-                        onValueChange = {description = it},
+                        onValueChange = { description = it },
                         label = { Text(stringResource(R.string.description_optional)) },
-                        placeholder = { Text(stringResource(R.string.description_hint)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                // Expiry Date - Clickable to show date picker
                 OutlinedTextField(
                     value = selectedDate?.format(DateTimeFormatter.ofPattern("MMM dd, yyyy")) ?: "",
                     onValueChange = {},
                     readOnly = true,
                     label = { Text(stringResource(R.string.expiry_date)) },
-                    placeholder = { Text(stringResource(R.string.select_date)) },
                     trailingIcon = {
                         IconButton(onClick = { showDatePicker = true }) {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = stringResource(R.string.select_date)
-                            )
+                            Icon(Icons.Default.DateRange, contentDescription = null)
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Notification Days
                 OutlinedTextField(
                     value = notificationDaysString,
                     onValueChange = { notificationDaysString = it },
                     label = { Text(stringResource(R.string.notification_days)) },
-                    placeholder = { Text("ex - 30,7,1") },
-                    supportingText = { Text(stringResource(R.string.notification_days_help)) },
-                    singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -329,10 +291,7 @@ fun AddDocumentDialog(
             TextButton(
                 onClick = {
                     selectedDate?.let { date ->
-                        val notificationDays = notificationDaysString
-                            .split(",")
-                            .mapNotNull { it.trim().toIntOrNull() }
-
+                        val notificationDays = notificationDaysString.split(",").mapNotNull { it.trim().toIntOrNull() }
                         onConfirm(selectedType, date, notificationDays, description)
                     }
                 },
@@ -348,7 +307,6 @@ fun AddDocumentDialog(
         }
     )
 
-    // Date Picker Dialog
     if (showDatePicker) {
         DatePickerDialog(
             onDismiss = { showDatePicker = false },
@@ -373,17 +331,15 @@ fun EditDocumentDialog(
     var expanded by remember { mutableStateOf(false) }
     var description by remember { mutableStateOf(document.description) }
     var showDatePicker by remember { mutableStateOf(false) }
-    val showDescriptionField = selectedType == DocumentType.OTHER || selectedType == DocumentType.ROAD_TOLL || selectedType == DocumentType.VIGNETTE
 
+    val showDescriptionField = selectedType == DocumentType.OTHER || selectedType == DocumentType.ROAD_TOLL || selectedType == DocumentType.VIGNETTE
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.edit_document)) },
         text = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 ExposedDropdownMenuBox(
@@ -396,9 +352,7 @@ fun EditDocumentDialog(
                         readOnly = true,
                         label = { Text(stringResource(R.string.document_type)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor()
+                        modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                     )
                     ExposedDropdownMenu(
                         expanded = expanded,
@@ -418,12 +372,10 @@ fun EditDocumentDialog(
 
                 if (showDescriptionField) {
                     OutlinedTextField(
-                        value = document.description,
+                        value = description,
                         onValueChange = { description = it },
                         label = { Text(stringResource(R.string.description_optional)) },
-                        placeholder = { Text(stringResource(R.string.description_hint)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
@@ -432,13 +384,9 @@ fun EditDocumentDialog(
                     onValueChange = {},
                     readOnly = true,
                     label = { Text(stringResource(R.string.expiry_date)) },
-                    placeholder = { Text(stringResource(R.string.select_date)) },
                     trailingIcon = {
                         IconButton(onClick = { showDatePicker = true }) {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = stringResource(R.string.select_date)
-                            )
+                            Icon(Icons.Default.DateRange, contentDescription = null)
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -448,9 +396,6 @@ fun EditDocumentDialog(
                     value = notificationDaysString,
                     onValueChange = { notificationDaysString = it },
                     label = { Text(stringResource(R.string.notification_days)) },
-                    placeholder = { Text("ex - 30,7,1") },
-                    supportingText = { Text(stringResource(R.string.notification_days_help)) },
-                    singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -459,18 +404,8 @@ fun EditDocumentDialog(
             TextButton(
                 onClick = {
                     selectedDate?.let { date ->
-                        val notificationDays = notificationDaysString
-                            .split(",")
-                            .mapNotNull { it.trim().toIntOrNull() }
-                            .sortedDescending()
-
-                        onConfirm(
-                            document.copy(
-                                type = selectedType,
-                                expirationDate = date,
-                                notificationDays = notificationDays
-                            )
-                        )
+                        val notificationDays = notificationDaysString.split(",").mapNotNull { it.trim().toIntOrNull() }.sortedDescending()
+                        onConfirm(document.copy(type = selectedType, expirationDate = date, notificationDays = notificationDays, description = description))
                     }
                 },
                 enabled = selectedDate != null
@@ -510,9 +445,7 @@ fun DatePickerDialog(
             TextButton(
                 onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
-                        val date = java.time.Instant.ofEpochMilli(millis)
-                            .atZone(java.time.ZoneId.systemDefault())
-                            .toLocalDate()
+                        val date = java.time.Instant.ofEpochMilli(millis).atZone(java.time.ZoneId.systemDefault()).toLocalDate()
                         onDateSelected(date)
                     }
                 }

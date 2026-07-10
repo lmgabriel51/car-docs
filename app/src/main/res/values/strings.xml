@@ -46,6 +46,7 @@
 
     <!-- Document Status -->
     <string name="expires">Expiră: %1$s</string>
+    <string name="expired">A expirat!</string>
     <string name="expired_days_ago">Expirat acum %1$d zile</string>
     <string name="expires_today">Expiră astăzi!</string>
     <string name="expires_tomorrow">Expiră mâine</string>
