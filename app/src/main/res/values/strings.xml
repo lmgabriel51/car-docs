@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CarDocs</string>
+
+    <!-- Document Types -->
+    <string name="document_type_insurance">Asigurare</string>
+    <string name="document_type_technical_inspection">Inspecție Tehnică</string>
+    <string name="document_type_road_toll">Rovinieta</string>
+    <string name="document_type_vignette">Taxă</string>
+    <string name="document_type_other">Altele</string>
+
+    <!-- Screens -->
+    <string name="my_cars">Mașinile Mele</string>
+    <string name="add_car">Adaugă Mașină</string>
+    <string name="edit_car">Editează Mașină</string>
+    <string name="delete_car">Șterge Mașină</string>
+    <string name="add_document">Adaugă Document</string>
+    <string name="edit_document">Editează Document</string>
+    <string name="delete_document">Șterge Document</string>
+
+    <!-- Form Labels -->
+    <string name="car_name">Numele Mașinii</string>
+    <string name="car_name_hint">ex., Honda Civic</string>
+    <string name="license_plate">Număr Înmatriculare</string>
+    <string name="license_plate_hint">ex., NT-12-ABC</string>
+    <string name="document_type">Tip Document</string>
+    <string name="expiry_date">Data Expirării</string>
+    <string name="select_date">Selectează data</string>
+    <string name="notification_days">Zile Notificare</string>
+    <string name="notification_days_hint">ex. 30,7,1</string>
+    <string name="notification_days_help">Zile separate prin virgulă înainte de expirare</string>
+
+    <!-- Buttons -->
+    <string name="add">Adaugă</string>
+    <string name="save">Salvează</string>
+    <string name="cancel">Anulează</string>
+    <string name="delete">Șterge</string>
+    <string name="ok">OK</string>
+    <string name="back">Înapoi</string>
+
+    <!-- Messages -->
+    <string name="no_cars_yet">Nicio mașină încă. Apasă + pentru a adăuga una!</string>
+    <string name="no_documents_yet">Niciun document încă. Apasă + pentru a adăuga unul!</string>
+    <string name="delete_car_confirmation">Ești sigur că vrei să ștergi \"%1$s\"? Aceasta va șterge și toate documentele ei.</string>
+    <string name="delete_document_confirmation">Ești sigur că vrei să ștergi acest %1$s?</string>
+
+    <!-- Document Status -->
+    <string name="expires">Expiră: %1$s</string>
+    <string name="expired_days_ago">Expirat acum %1$d zile</string>
+    <string name="expires_today">Expiră astăzi!</string>
+    <string name="expires_tomorrow">Expiră mâine</string>
+    <string name="days_remaining">%1$d zile rămase</string>
+    <string name="notifications_info">Notificări: cu %1$s zile înainte</string>
+
+    <!-- Notifications -->
+    <string name="notification_title_today">%1$s expiră ASTĂZI!</string>
+    <string name="notification_title_tomorrow">%1$s expiră MÂINE!</string>
+    <string name="notification_title_soon">%1$s expiră în curând</string>
+    <string name="notification_message_today">%2$s mașinii %1$s expiră astăzi!</string>
+    <string name="notification_message_tomorrow">%2$s mașinii %1$s expiră mâine!</string>
+    <string name="notification_message_days">%2$s mașinii %1$s expiră în %3$d zile</string>
+
+    <string name="description">Descriere</string>
+    <string name="description_optional">Descriere (opțională)</string>
+    <string name="description_hint">ex., Vignetă autostradă, Taxă oraș</string>
+</resources>
