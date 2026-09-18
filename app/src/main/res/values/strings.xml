@@ -42,7 +42,7 @@
     <string name="no_cars_yet">Nicio mașină încă. Apasă + pentru a adăuga una!</string>
     <string name="no_documents_yet">Niciun document încă. Apasă + pentru a adăuga unul!</string>
     <string name="delete_car_confirmation">Ești sigur că vrei să ștergi \"%1$s\"? Aceasta va șterge și toate documentele ei.</string>
-    <string name="delete_document_confirmation">Ești sigur că vrei să ștergi acest %1$s?</string>
+    <string name="delete_document_confirmation">Ești sigur că vrei să ștergi %1$s?</string>
 
     <!-- Document Status -->
     <string name="expires">Expiră: %1$s</string>

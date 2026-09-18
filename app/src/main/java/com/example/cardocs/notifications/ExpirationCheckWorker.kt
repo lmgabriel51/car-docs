@@ -1,6 +1,7 @@
 package com.example.cardocs.notifications
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.flow.first
@@ -32,7 +33,7 @@ class ExpirationCheckWorker (
                 val nextNotificationDay = document.notificationDays.first()
 
                 // Time to send notification??
-                if (daysUntilExpiration <= nextNotificationDay && daysUntilExpiration >= 0){
+                if (daysUntilExpiration in 0..nextNotificationDay){
                     // Get car name
                     val car = repository.getCarById(document.carId)
                     val carName = car?.name ?: "Your car"
@@ -53,8 +54,11 @@ class ExpirationCheckWorker (
             }
 
             Result.success()
+        } catch (e: SecurityException) {
+            Log.e("ExpirationCheckWorker", "SecurityException: Notification permission may be missing", e)
+            Result.failure()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ExpirationCheckWorker", "Error checking for expirations", e)
             Result.failure()
         }
     }
