@@ -52,14 +52,7 @@ Room Database (Cars & Documents, with foreign keys)
 - Minimum SDK: API 26 (Android 8.0)
 
 ### Setup
-1. Clone the repository
-   ```bash
-   git clone https://github.com/yourusername/car-expiry-tracker.git
-   ```
-2. Open the project in Android Studio
-3. Let Gradle sync and download dependencies
-4. Run the app on an emulator or physical device
-
+Go to "Release" and download the latest version
 ## Roadmap / Ideas for Future Improvements
 
 - [ ] Dashboard view showing all upcoming expirations across every car
