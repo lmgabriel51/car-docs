@@ -48,7 +48,6 @@ Room Database (Cars & Documents, with foreign keys)
 ## Getting Started
 
 ### Prerequisites
-- Android Studio (Hedgehog or newer recommended)
 - Minimum SDK: API 26 (Android 8.0)
 
 ### Setup
